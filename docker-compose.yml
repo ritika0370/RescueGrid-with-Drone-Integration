@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: disaster_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/disaster_db
+      - DATABASE_SYNC_URL=postgresql://postgres:postgres@db:5432/disaster_db
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=production-secure-disaster-response-token-signing-key-2026
+      - VISION_PROVIDER=simulated
+      - STT_PROVIDER=configurable
+      - TWILIO_ACCOUNT_SID=AC_TWILIO_PLACEHOLDER_ACCOUNT_SID
+      - TWILIO_AUTH_TOKEN=TWILIO_PLACEHOLDER_AUTH_TOKEN
+      - TWILIO_PHONE_NUMBER=+18005550199
+      - TWILIO_WEBHOOK_BASE_URL=http://localhost:8000
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    container_name: disaster_postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=disaster_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d disaster_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: disaster_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  redis_data:
+  uploads_data:
