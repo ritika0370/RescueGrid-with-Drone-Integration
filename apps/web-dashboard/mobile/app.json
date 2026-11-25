@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "CIRRUS Citizen",
+    "slug": "cirrus-citizen",
+    "scheme": "cirrus",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "plugins": [
+      "expo-router",
+      ["expo-location", { "locationWhenInUsePermission": "Location is used to include your position with an emergency report. You can choose a location manually instead." }],
+      ["expo-image-picker", { "photosPermission": "Choose a photo to attach to an emergency report.", "cameraPermission": "Take a photo to attach to an emergency report." }],
+      ["expo-audio", { "microphonePermission": "Record an optional voice note for an emergency report." }],
+      "expo-secure-store"
+    ],
+    "experiments": { "typedRoutes": true },
+    "ios": { "supportsTablet": true },
+    "android": { "edgeToEdgeEnabled": true }
+  }
+}

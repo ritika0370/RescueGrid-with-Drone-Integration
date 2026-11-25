@@ -1,0 +1,8 @@
+packages:
+  - mobile
+
+pmOnFail: ignore
+
+minimumReleaseAgeExclude:
+  - '@next/*'
+  - next
